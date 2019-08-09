@@ -1,5 +1,7 @@
 package br.com.ntconsult.votacao.entities;
 
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -18,7 +20,7 @@ public class Pauta implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }

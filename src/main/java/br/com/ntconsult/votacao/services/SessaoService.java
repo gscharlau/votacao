@@ -1,25 +1,13 @@
 package br.com.ntconsult.votacao.services;
 
 import br.com.ntconsult.votacao.entities.Sessao;
-import br.com.ntconsult.votacao.repositories.SessaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class SessaoService {
+import java.util.Optional;
 
-    private SessaoRepository sessaoRepository;
+public interface SessaoService {
 
-    @Autowired
-    public SessaoService(SessaoRepository sessaoRepository) {
-        this.sessaoRepository = sessaoRepository;
-    }
+    Sessao criarSessao(Sessao sessao);
+    Sessao fecharSessao(Sessao sessao);
+    Optional<Sessao> obterSessao(Long id);
 
-    public Sessao criarSessao(Sessao sessao){
-        return sessaoRepository.save(sessao);
-    }
-
-    public void fecharSessao(Sessao sessao){
-
-    }
 }

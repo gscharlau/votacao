@@ -1,21 +1,13 @@
 package br.com.ntconsult.votacao.services;
 
 import br.com.ntconsult.votacao.entities.Pauta;
-import br.com.ntconsult.votacao.repositories.PautaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class PautaService {
+import java.util.List;
+import java.util.Optional;
 
-    private PautaRepository pautaRepository;
+public interface PautaService {
 
-    @Autowired
-    public PautaService(PautaRepository pautaRepository) {
-        this.pautaRepository = pautaRepository;
-    }
-
-    public Pauta salvarPauta(Pauta pauta){
-        return pautaRepository.save(pauta);
-    }
+    Pauta salvarPauta(Pauta pauta);
+    List<Pauta> obterTodasPautas();
+    Optional<Pauta> obterPautaPorId(Long id);
 }
