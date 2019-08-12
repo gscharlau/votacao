@@ -1,12 +1,13 @@
 package br.com.ntconsult.votacao.api.v1.dtos;
 
+import br.com.ntconsult.votacao.api.v1.dtos.base.RequestDto;
 import br.com.ntconsult.votacao.entities.Pauta;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public class SessaoRequestDto {
+public class SessaoRequestDto extends RequestDto {
     private long idPauta;
     private Integer duracao;
 

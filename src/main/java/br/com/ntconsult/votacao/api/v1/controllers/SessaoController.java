@@ -7,20 +7,22 @@ import br.com.ntconsult.votacao.entities.Pauta;
 import br.com.ntconsult.votacao.entities.Sessao;
 import br.com.ntconsult.votacao.services.PautaService;
 import br.com.ntconsult.votacao.services.SessaoService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class SessaoController implements V1 {
 
     private SessaoService sessaoService;
@@ -35,29 +37,36 @@ public class SessaoController implements V1 {
     }
 
     @PostMapping(value = "/sessao")
-    public ResponseEntity<?> abrirNovaSessao(@Valid @RequestBody SessaoRequestDto sessaoRequestDto){
+    @ApiOperation(value = "Endpoint abrir nova sessão", notes = "Inclusão de nova sessão.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Sessão incluída com sucesso", response = Sessao.class),
+            @ApiResponse(code = 500, message = "Falha ao incluir sessão")
+    })
+    public ResponseEntity<?> abrirNovaSessao(@Valid @RequestBody SessaoRequestDto request){
 
         try {
-            Optional<Pauta> pauta = pautaService.obterPautaPorId(sessaoRequestDto.getIdPauta());
+            Optional<Pauta> pauta = pautaService.obterPautaPorId(request.getIdPauta());
+
             if (!pauta.isPresent()) {
                 Response<Sessao> response = new Response<>();
                 response.getErrors().add("Pauta não existente");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
 
-            if (!Optional.ofNullable(sessaoRequestDto.getDuracao()).isPresent()) {
-                sessaoRequestDto.setDuracao(1);
+            if (!Optional.ofNullable(request.getDuracao()).isPresent()) {
+                request.setDuracao(1);
             }
 
             Response<Sessao> response = new Response<>();
+            LocalDateTime dateTime = LocalDateTime.now().plusMinutes(request.getDuracao());
 
-            response.setData(sessaoService.criarSessao(Sessao.SessaoBuilder.aSessao()
-                    .withAbertura(LocalDateTime.now())
+            Sessao sessao = Sessao.SessaoBuilder.aSessao()
                     .withPauta(pauta.get())
-                    .withDuracao(sessaoRequestDto.getDuracao())
-                    .build()));
+                    .withDataExpiracao(dateTime)
+                    .build();
 
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            response.setData(sessaoService.criarSessao(sessao));
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e){
             Response<?> response = new Response<>();
             response.getErrors().add("Falha ao criar sessão");

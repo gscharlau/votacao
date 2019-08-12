@@ -5,6 +5,9 @@ import br.com.ntconsult.votacao.api.v1.dtos.PautaRequestDto;
 import br.com.ntconsult.votacao.dtos.Response;
 import br.com.ntconsult.votacao.entities.Pauta;
 import br.com.ntconsult.votacao.services.PautaService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class PautaController implements V1 {
 
     private PautaService pautaService;
@@ -29,6 +33,11 @@ public class PautaController implements V1 {
     }
 
     @PostMapping(value = "/pauta")
+    @ApiOperation(value = "Endpoint para inclusão de pautas", notes = "Faz a inclusão de uma pauta.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Inclusão da pauta realizada com sucesso", response = Pauta.class),
+            @ApiResponse(code = 500, message = "Falha ao criar pauta")
+    })
     public ResponseEntity<?> incluirPauta(@Valid @RequestBody PautaRequestDto pautaRequestDto){
         log.info("Criação de Pauta");
 
@@ -47,6 +56,12 @@ public class PautaController implements V1 {
     }
 
     @GetMapping(value = "/pautas")
+    @ApiOperation(value = "Endpoint para listagem de pautas", notes = "Lista todas as pautas.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Pautas listadas com sucesso", response = Pauta.class),
+            @ApiResponse(code = 201, message = "Sem pautas cadastradas", response = Pauta.class),
+            @ApiResponse(code = 500, message = "Falha ao listar pauta")
+    })
     public ResponseEntity<?> listarPautas(){
         log.info("buscando todas as pautas");
 
@@ -66,6 +81,12 @@ public class PautaController implements V1 {
     }
 
     @GetMapping(value = "/pauta/{id}")
+    @ApiOperation(value = "Endpoint lista pauta específica", notes = "Lista uma pauta.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Pautas listadas com sucesso", response = Pauta.class),
+            @ApiResponse(code = 201, message = "Sem pautas cadastradas", response = Pauta.class),
+            @ApiResponse(code = 500, message = "Falha ao listar pauta")
+    })
     public ResponseEntity<?> listarPauta(@PathVariable Long id){
         log.info("buscando a pauta {}", id);
 

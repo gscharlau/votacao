@@ -1,6 +1,8 @@
 package br.com.ntconsult.votacao.api.v1.dtos;
 
-public class PautaResponseDto {
+import br.com.ntconsult.votacao.api.v1.dtos.base.RequestDto;
+
+public class PautaResponseDto extends RequestDto {
 
     private Long id;
     private String titulo;
